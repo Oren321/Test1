@@ -1,45 +1,29 @@
-assert(getscriptbytecode, "Exploit not supported.")
+-- Required modules
+local ThievingCmds = require(game.ReplicatedStorage.Library.Client.ThievingCmds)
 
-local API: string = "http://api.plusgiant5.com"
-
-local last_call = 0
-local function call(konstantType: string, scriptPath: Script | ModuleScript | LocalScript): string
-    local success: boolean, bytecode: string = pcall(getscriptbytecode, scriptPath)
-
-    if (not success) then
-        return `-- Failed to get script bytecode, error:\n\n--[[\n{bytecode}\n--]]`
+-- Function to print all thieving objects
+local function printThievingObjects()
+    -- Get current pad object (what you're near)
+    local currentObject = ThievingCmds.GetPadObject()
+    if currentObject then
+        print("Current Nearby Object:")
+        print("ID:", currentObject._id)
+        print("Type:", currentObject._dir.Name)
+        print("Required Lockpick:", currentObject.dir.RequiredLockpick.Name)
     end
 
-    local time_elapsed = os.clock() - last_call
-    if time_elapsed <= .5 then
-        task.wait(.5 - time_elapsed)
-    end
-    local httpResult = request({
-        Url = API .. konstantType,
-        Body = bytecode,
-        Method = "POST",
-        Headers = {
-            ["Content-Type"] = "text/plain"
-        },
-    })
-    last_call = os.clock()
-    
-    if (httpResult.StatusCode ~= 200) then
-        return `-- Error occured while requesting the API, error:\n\n--[[\n{httpResult.Body}\n--]]`
-    else
-        return httpResult.Body
+    -- Print all objects from the tracking system
+    print("
+All Available Objects:")
+    for , obj in pairs(workspace.MAP.INTERACT:GetChildren()) do
+        if obj.Name == "ThievingObject" then
+            print("------------------------")
+            print("Object ID:", obj:GetAttribute("ObjectID"))
+            print("Name:", obj.Name)
+            print("Position:", obj:GetPivot().Position)
+        end
     end
 end
 
-local function decompile(scriptPath: Script | ModuleScript | LocalScript): string
-    return call("/konstant/decompile", scriptPath)
-end
-
-local function disassemble(scriptPath: Script | ModuleScript | LocalScript): string
-    return call("/konstant/disassemble", scriptPath)
-end
-
-getgenv().decompile = decompile
-getgenv().disassemble = disassemble
-
--- by lovrewe
+-- Print all objects
+printThievingObjects()
