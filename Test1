@@ -558,7 +558,7 @@ Misc2:NewButton("AntiLag", "AntiLag Will Freeze Game For A Second", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/AntiLag/refs/heads/main/OpenSourced", true))()
 end)
 
-Misc2Section:NewButton("ButtonText", "ButtonInfo", function()
+Misc2:NewButton("ButtonText", "ButtonInfo", function()
     local platformName = "TeleportPlatform"
     
     -- Check if a platform already exists
