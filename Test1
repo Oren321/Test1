@@ -554,6 +554,11 @@ else
     end
 end)
 
+--MiscStuff
+Misc:NewButton("AntiLag", "AntiLag Will Freeze Game For A Second", function()
+ loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/AntiLag/refs/heads/main/OpenSourced", true))()
+ end)
+
 Misc2:NewButton("HideFromPlayers", "HidesFromPlayers", function()
     local platformName = "TeleportPlatform"
     
