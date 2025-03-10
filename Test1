@@ -22,8 +22,6 @@ local Settings2 = Settings:NewSection("GUI Settings")
 local Credits = Window:NewTab("Credits")
 local Credits1 = Credits:NewSection("Fred - Programming & Design")
 local Credits2 = Credits:NewSection("Massy - Programming, Branding & Key System")
-local Test = Window:NewTab("Testingone")
-local Test = Test:NewSection("TestingStuff")
 
 
 --AutoRoll Toggle
@@ -558,6 +556,20 @@ end)
 
 Misc2:NewButton("AntiLag", "AntiLag Will Freeze Game For A Second", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/AntiLag/refs/heads/main/OpenSourced", true))()
+end)
+
+Misc2Section:NewButton("ButtonText", "ButtonInfo", function()
+    local part = Instance.new("Part")
+part.Size = Vector3.new(70, 1.2, 70)
+part.CFrame = CFrame.new(-6.83909702, 500.189697, 4.90364408)
+part.Anchored = true
+part.Parent = game.Workspace
+
+-- Teleport the player to the part's position
+local player = game.Players.LocalPlayer
+if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+    player.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 3, 0) -- Offset to avoid getting stuck in the part
+end
 end)
 
 Settings2:NewKeybind("Toggle UI", "Toggle the gui", Enum.KeyCode.RightShift, function()
