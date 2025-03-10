@@ -554,17 +554,14 @@ else
     end
 end)
 
-Misc2:NewButton("AntiLag", "AntiLag Will Freeze Game For A Second", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/AntiLag/refs/heads/main/OpenSourced", true))()
-end)
-
-Misc2:NewButton("ButtonText", "ButtonInfo", function()
+Misc2:NewButton("HideFromPlayers", "HidesFromPlayers", function()
     local platformName = "TeleportPlatform"
     
-    -- Check if a platform already exists
+    -- Check if the platform already exists
     local existingPlatform = game.Workspace:FindFirstChild(platformName)
     if existingPlatform then
-        return -- Exit if a platform already exists
+        existingPlatform:Destroy() -- Remove the existing platform
+        return
     end
 
     -- Create a new platform
