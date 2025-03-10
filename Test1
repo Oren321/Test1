@@ -559,17 +559,27 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/AntiLag/refs/
 end)
 
 Misc2Section:NewButton("ButtonText", "ButtonInfo", function()
-    local part = Instance.new("Part")
-part.Size = Vector3.new(70, 1.2, 70)
-part.CFrame = CFrame.new(-6.83909702, 500.189697, 4.90364408)
-part.Anchored = true
-part.Parent = game.Workspace
+    local platformName = "TeleportPlatform"
+    
+    -- Check if a platform already exists
+    local existingPlatform = game.Workspace:FindFirstChild(platformName)
+    if existingPlatform then
+        return -- Exit if a platform already exists
+    end
 
--- Teleport the player to the part's position
-local player = game.Players.LocalPlayer
-if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-    player.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 3, 0) -- Offset to avoid getting stuck in the part
-end
+    -- Create a new platform
+    local part = Instance.new("Part")
+    part.Name = platformName
+    part.Size = Vector3.new(70, 1.2, 70)
+    part.CFrame = CFrame.new(-6.83909702, 500.189697, 4.90364408)
+    part.Anchored = true
+    part.Parent = game.Workspace
+
+    -- Teleport the player to the part's position
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 3, 0) -- Offset to avoid getting stuck in the part
+    end
 end)
 
 Settings2:NewKeybind("Toggle UI", "Toggle the gui", Enum.KeyCode.RightShift, function()
