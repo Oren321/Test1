@@ -22,8 +22,8 @@ local Settings2 = Settings:NewSection("GUI Settings")
 local Credits = Window:NewTab("Credits")
 local Credits1 = Credits:NewSection("Fred - Programming & Design")
 local Credits2 = Credits:NewSection("Massy - Programming, Branding & Key System")
-local Test = Test:NewSection("Test")
-local Test = Test:NewSection("Test")
+local Test = Window:NewTab("Testingone")
+local Test = Test:NewSection("TestingStuff")
 
 
 --AutoRoll Toggle
