@@ -555,7 +555,7 @@ else
 end)
 
 --MiscStuff
-Misc:NewButton("AntiLag", "AntiLag Will Freeze Game For A Second", function()
+Misc2:NewButton("AntiLag", "AntiLag Will Freeze Game For A Second", function()
  loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/AntiLag/refs/heads/main/OpenSourced", true))()
  end)
 
