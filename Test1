@@ -33,7 +33,7 @@ Event2:NewToggle("Roll Clover Egg", "Auto Rolls The Clover Egg", function(v)
     while true do
         if getgenv().Eggs_Roll2 == false then return end
         game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Clovers_HatchEgg"):InvokeServer()
-        task.wait(17)
+        task.wait(15.5)
     end
 end)
 
