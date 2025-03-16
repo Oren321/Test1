@@ -18,6 +18,7 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Event = Window:AddTab({ Title = "Event", Icon = "" }),
     AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "" }),
+    AutoFish = Window:AddTab({ Title = "AutoFish", Icon = "" }),
 }
 
 -- Event Toggles
@@ -158,7 +159,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
                                 game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
                             end
                         end
-                        wait(30)
+                        task.wait(30)
                     end
                 end)
             end
@@ -168,7 +169,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
     end
 })
 
---Event Section
+--AutoUse Clover Power Potion Section
 local Section = Tabs.Event:AddSection("AutoUse Clover Power Potion")
 
 --Event AutoUse
@@ -188,7 +189,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
                         [2] = 10
                     }
                     game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                    
-                    wait(10)
+                    task.wait(10)
                 end
             end)
         else
@@ -212,7 +213,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
                         [2] = 10
                     }
                     game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
-                    wait(10)
+                    task.wait(10)
                 end
             end)
         else
@@ -236,7 +237,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
                         [2] = 10
                     }
                     game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
-                    wait(10)
+                    task.wait(10)
                 end
             end)
         else
@@ -260,7 +261,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
                         [2] = 3
                     } 
                     game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                    
-                    wait(10)
+                    task.wait(10)
                 end
             end)
         else
@@ -285,7 +286,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
                         [2] = 1
                     }
                     game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                               
-                    wait(10)
+                    task.wait(10)
                 end
             end)
         else
@@ -313,4 +314,169 @@ local Toggle = Tabs.AutoFarm:AddToggle("AutoFarm",
             getgenv().toggle = false
         end
     end 
+})
+
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "Auto Fish Default", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                  game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Default")
+                  game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
+                    task.wait()
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
+
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "Auto Fish Frozen", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Ice")
+                    game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
+                    task.wait()
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
+
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "AutoFish Corrupted", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_Fish"):InvokeServer("Corrupted")
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_Success"):FireServer()
+                    task.wait()
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
+
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "AutoFish Boat", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Boating")
+                    game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
+                    task.wait()
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
+
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "AutoFish Kraken", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Kraken")
+                    game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
+                    task.wait()
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
+
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "AutoCollect Boat Loot ", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_FishermanClaim"):InvokeServer()
+                    task.wait(10)
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
+
+--AutoBuy Fishing Merchants Section
+local Section = Tabs.AutoFish:AddSection("AutoBuy Fishing Merchants")
+
+--AutoBuy
+local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
+{
+    Title = "AutoBuy Frozen Fishing Merchant", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        if state then
+            if not getgenv().AutoBuyIceFishingMerchant then
+                getgenv().AutoBuyIceFishingMerchant = true
+                spawn(function()
+                    while getgenv().AutoBuyIceFishingMerchant do
+                        for i = 1, 6 do
+                            for j = 1, 3 do
+                                local args = {
+                                    [1] = "IceFishingMerchant",
+                                    [2] = i
+                                }
+                                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
+                            end
+                        end
+                        task.wait(30)
+                    end
+                end)
+            end
+        else
+            getgenv().AutoBuyIceFishingMerchant = false
+        end
+    end
 })
