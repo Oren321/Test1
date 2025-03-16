@@ -246,22 +246,24 @@ local Toggle = Tabs.Event:AddToggle("Event",
 
 local Toggle = Tabs.Event:AddToggle("Event", 
 {
-    Title = "AutoUse Charge Token", 
+    Title = "AutoUse Instant Charge Token", 
     Description = "",
     Default = false,
     Callback = function(state)
+        getgenv().toggle = state
+        
         if state then
-            getgenv().toggle = true
-            while getgenv().toggle do
-                local args = {
-                    [1] = "ac6c80cca1b945df807d82176ed13c18",
-                    [2] = 3
-                }
-                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
-                task.wait(10)
-            end
+            spawn(function()
+                while getgenv().toggle do
+                    local args = {
+                        [1] = "6b87b4d85cc14f8ebef1329a9dcd3ef1",
+                        [2] = 3
+                    } 
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                    
+                    wait(10)
+                end
+            end)
         else
-            getgenv().toggle = false
         end
     end 
 })
