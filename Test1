@@ -244,7 +244,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
     end 
 })
 
-local Toggle = Tab:AddToggle("Event", 
+local Toggle = Tabs.Event:AddToggle("Event", 
 {
     Title = "AutoUse Charge Token", 
     Description = "",
@@ -255,7 +255,7 @@ local Toggle = Tab:AddToggle("Event",
             while getgenv().toggle do
                 local args = {
                     [1] = "ac6c80cca1b945df807d82176ed13c18",
-                    [2] = 1
+                    [2] = 3
                 }
                 game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
                 task.wait(10)
