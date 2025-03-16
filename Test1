@@ -458,10 +458,10 @@ local Toggle = Tabs.AutoFish:AddToggle("AutoFish",
     Default = false,
     Callback = function(state)
         if state then
-            if not getgenv().AutoBuyStandardMerchant then
-                getgenv().AutoBuyStandardMerchant = true
+            if not getgenv().AutoBuyFishingMerchant then
+                getgenv().AutoBuyFishingMerchant = true
                 spawn(function()
-                    while getgenv().AutoBuyStandardMerchant do
+                    while getgenv().AutoBuyFishingMerchant do
                         for i = 1, 6 do
                             for j = 1, 3 do
                                 local args = {
@@ -476,7 +476,7 @@ local Toggle = Tabs.AutoFish:AddToggle("AutoFish",
                 end)
             end
         else
-            getgenv().AutoBuyStandardMerchant = false
+            getgenv().AutoBuyFishingMerchant = false
         end
     end
 })
