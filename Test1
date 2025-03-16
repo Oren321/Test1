@@ -264,6 +264,8 @@ local Toggle = Tabs.Event:AddToggle("Event",
                 end
             end)
         else
+            getgenv().toggle = false
         end
     end 
 })
+
