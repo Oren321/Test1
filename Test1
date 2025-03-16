@@ -20,9 +20,6 @@ local Tabs = {
     AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "" }),
 }
 
---Sections
-local Section = Tabs.Event:AddSection("AutoBuy Clover Merchant")
-
 -- Event Toggles
 local Toggle = Tabs.Event:AddToggle("Event", 
 {
@@ -171,3 +168,78 @@ local Toggle = Tabs.Event:AddToggle("Event",
     end
 })
 
+--Event Section
+local Section = Tabs.Event:AddSection("AutoUse Clover Power Potion")
+
+--Event AutoUse
+local Toggle = Tabs.Event:AddToggle("Event", 
+{
+    Title = "AutoUse Clover Loot Potion", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    local args = {
+                        [1] = "810b59b1d97643179551a6fc6b683284",
+                        [2] = 10
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                    
+                    wait(10)
+                end
+            end)
+        else
+        end
+    end 
+})
+
+local Toggle = Tabs.Event:AddToggle("Event", 
+{
+    Title = "AutoUse Clover Power Potion", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    local args = {
+                        [1] = "19d22eb1d5ac4953bcc7dd012f29ad32",
+                        [2] = 10
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
+                    wait(10)
+                end
+            end)
+        else
+        end
+    end 
+})
+
+local Toggle = Tabs.Event:AddToggle("Event", 
+{
+    Title = "AutoUse Harvesting Speed Potion", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    local args = {
+                        [1] = "d4385ca987404640bce99f634008396a",
+                        [2] = 10
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
+                    wait(10)
+                end
+            end)
+        else
+        end
+    end 
+})
