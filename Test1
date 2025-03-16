@@ -271,7 +271,7 @@ local Toggle = Tabs.Event:AddToggle("Event",
 
 local Toggle = Tabs.Event:AddToggle("Event", 
 {
-    Title = "AutoUse Instant Charge Token", 
+    Title = "AutoUse Huge Instant Charge Token", 
     Description = "",
     Default = false,
     Callback = function(state)
