@@ -17,7 +17,11 @@ local Window = Fluent:CreateWindow({
 --Tabs
 local Tabs = {
     Event = Window:AddTab({ Title = "Event", Icon = "" }),
+    AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "" }),
 }
+
+--Sections
+local Section = Tabs.Event:AddSection("AutoBuy Clover Merchant")
 
 -- Event Toggles
 local Toggle = Tabs.Event:AddToggle("Event", 
@@ -139,23 +143,31 @@ local Toggle = Tabs.Event:AddToggle("Event",
 
 local Toggle = Tabs.Event:AddToggle("Event", 
 {
-    Title = "Auto Buy Clover Merchant", 
-    Description = "", 
+    Title = "AutoBuy Clover Merchant", 
+    Description = "",
     Default = false,
     Callback = function(state)
         if state then
-            print("Auto Buy Clover Merchant: ON")
-            getgenv().AutoBuyCloverMerchant = true
-            while getgenv().AutoBuyCloverMerchant do
-                for i = 1, 8 do
-                    local args = { [1] = "CloverMerchant", [2] = i }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
-                end
-                task.wait(30)
+            if not getgenv().AutoBuyCloverMerchant then
+                getgenv().AutoBuyCloverMerchant = true
+                spawn(function()
+                    while getgenv().AutoBuyCloverMerchant do
+                        for i = 1, 6 do
+                            for j = 1, 3 do
+                                local args = {
+                                    [1] = "CloverMerchant",
+                                    [2] = i
+                                }
+                                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
+                            end
+                        end
+                        wait(30)
+                    end
+                end)
             end
         else
-            print("Auto Buy Clover Merchant: OFF")
             getgenv().AutoBuyCloverMerchant = false
         end
     end
 })
+
