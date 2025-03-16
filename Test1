@@ -293,3 +293,24 @@ local Toggle = Tabs.Event:AddToggle("Event",
         end
     end 
 })
+
+local Toggle = Tabs.AutoFarm:AddToggle("AutoFarm", 
+{
+    Title = "AutoRoll", 
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        getgenv().toggle = state
+        
+        if state then
+            spawn(function()
+                while getgenv().toggle do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_Roll"):InvokeServer()                 
+                    task.wait()
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end 
+})
