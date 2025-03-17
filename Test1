@@ -1,54 +1,82 @@
---UI
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local FredHUb = loadstring(game:HttpGet("https://raw.githubusercontent.com/idonthaveoneatm/Libraries/normal/quake/src"))()
 
 --Window
-local Window = Fluent:CreateWindow({
-    Title = "Private Script" .. Fluent.Version,
-    SubTitle = "By Fred And Massy",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
-    Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
-    Theme = "Darker",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+local Main = FredHUb:Window({
+    Title = "Private Script | By Oren",
 })
 
---Tabs
-local Tabs = {
-    Event = Window:AddTab({ Title = "Event", Icon = "" }),
-    AutoFarm = Window:AddTab({ Title = "AutoFarm", Icon = "" }),
-    AutoFish = Window:AddTab({ Title = "AutoFish", Icon = "" }),
-}
+--AutoFarm
+local AutoFarmTab = Main:Tab({
+    Name = "AutoFarm",
+    tabColor = Color3.fromHex("#71d1f5"),
+    Image = "rbxassetid://10709798174"
+})
 
--- Event Toggles
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "Auto Roll Clover Egg", 
-    Description = "",
+local AutoRollEnabled = false
+
+AutoFarmTab:Toggle({
+    Name = "AutoRoll",
     Default = false,
-    Callback = function(state)
-        if state then
-            getgenv().Eggs_Roll2 = true
-            while getgenv().Eggs_Roll2 do
-                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Clovers_HatchEgg"):InvokeServer()
-                task.wait(16)
-            end
-        else
-            getgenv().Eggs_Roll2 = false
+    Callback = function(var)
+        AutoRollEnabled = var
+        while AutoRollEnabled do
+            game:GetService("ReplicatedStorage").Network.Eggs_Roll:InvokeServer()
+            task.wait()
         end
-    end 
+    end
 })
 
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "Auto Collect Clovers", 
-    Description = "",
+--Event
+local EventTab = Main:Tab({
+    Name = "Event",
+    tabColor = Color3.fromHex("#71d1f5"),
+    Image = "rbxassetid://10709798174"
+})
+
+EventTab:Toggle({
+    Name = "Quake Toggle",
+    Default = false, -- [OPTIONAL]
+    Callback = function(var)
+        print("Quake Toggle", var)
+
+        getgenv().toggle = var
+
+        if var then
+            spawn(function()
+                while getgenv().toggle do
+                    local TycoonCmds = require(game:GetService("ReplicatedStorage").Library.Client.TycoonCmds)
+                    local Clover = require(game:GetService("ReplicatedStorage").Library.Directory.Tycoons).Clover
+                    local CloverEventCmds = require(game:GetService("ReplicatedStorage").Library.Client.CloverEventCmds)
+
+                    while true do
+                        local MINE = TycoonCmds.Get(Clover)
+
+                        if MINE then
+                            local currentPoints = CloverEventCmds.GetEggPoints(MINE)
+                            local maxPoints = CloverEventCmds.GetMaxEggPoints(MINE)
+
+                            if currentPoints >= maxPoints then
+                                game:GetService("ReplicatedStorage"):WaitForChild("Network")
+                                    :WaitForChild("Clovers_HatchEgg"):InvokeServer()
+                            end
+                        end
+
+                        task.wait()
+                    end
+                end
+            end)
+        else
+            getgenv().toggle = false
+        end
+    end
+})
+
+EventTab:Toggle({
+    Name = "Auto Collect Clovers",
     Default = false,
-    Callback = function(state)
-        if state then
-            getgenv().AutoCollectClover = true
-            while getgenv().AutoCollectClover do
+    Callback = function(var)
+        if var then
+            task.spawn(function()
                 local clovers = workspace.__THINGS.Clovers
 
                 local function fireTouchInterest(part)
@@ -58,455 +86,57 @@ local Toggle = Tabs.Event:AddToggle("Event",
                     firetouchinterest(part, primaryPart, 1)
                 end
 
-                for _, model in pairs(clovers:GetChildren()) do
-                    local part = model:FindFirstChild("Part")
-                    if part then
-                        fireTouchInterest(part)
+                while var do
+                    for _, model in pairs(clovers:GetChildren()) do
+                        local part = model:FindFirstChild("Part")
+                        if part then
+                            fireTouchInterest(part)
+                        end
                     end
+                    task.wait()
                 end
-                task.wait()
-            end
-        else
-            getgenv().AutoCollectClover = false
+            end)
         end
     end
 })
 
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "Auto Collect Hopper Loot", 
-    Description = "",
+EventTab:Toggle({
+    Name = "Auto Collect Hoppers Loot",
     Default = false,
-    Callback = function(state)
-        if state then
-            getgenv().AutoFish = true
-            spawn(function()
-                while getgenv().AutoFish do
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Clovers_HopperClaim"):InvokeServer()
-                    task.wait(15)
-                end
-            end)
-        else
-            getgenv().AutoFish = false
-        end
-    end 
-})
-
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "Auto Clover Upgrade", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        if state then
-            getgenv().AutoCloverUpgrade = true
-            spawn(function()
-                while getgenv().AutoCloverUpgrade do
-                    local args = { [1] = "Patch_1", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Farmer", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Speed1", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Speed2", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Quality1", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Quality2", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Speed3", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_1_Quality3", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-
-                    local args = { [1] = "Patch_2", [2] = "Clover" }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
-                    
-
-                    task.wait(1)
-                end
-            end)
-        else
-            getgenv().AutoCloverUpgrade = false
-        end
-    end 
-})
-
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "AutoBuy Clover Merchant", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        if state then
-            if not getgenv().AutoBuyCloverMerchant then
-                getgenv().AutoBuyCloverMerchant = true
-                spawn(function()
-                    while getgenv().AutoBuyCloverMerchant do
-                        for i = 1, 6 do
-                            for j = 1, 3 do
-                                local args = {
-                                    [1] = "CloverMerchant",
-                                    [2] = i
-                                }
-                                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
-                            end
-                        end
-                        task.wait(30)
-                    end
-                end)
-            end
-        else
-            getgenv().AutoBuyCloverMerchant = false
+    Callback = function(var)
+        AutoCollectHoppersLootEnabled = var
+        while AutoCollectHoppersLootEnabled do
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Clovers_HopperClaim"):InvokeServer()
+            task.wait(30)
         end
     end
 })
 
---AutoUse Clover Power Potion Section
-local Section = Tabs.Event:AddSection("AutoUse Clover Power Potion")
-
---Event AutoUse
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "AutoUse Clover Loot Potion", 
-    Description = "",
+EventTab:Toggle({
+    Name = "Quake Toggle",
     Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    local args = {
-                        [1] = "810b59b1d97643179551a6fc6b683284",
-                        [2] = 10
-                    }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                    
-                    task.wait(10)
-                end
-            end)
-        else
-        end
-    end 
-})
-
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "AutoUse Clover Power Potion", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    local args = {
-                        [1] = "19d22eb1d5ac4953bcc7dd012f29ad32",
-                        [2] = 10
-                    }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
-                    task.wait(10)
-                end
-            end)
-        else
-        end
-    end 
-})
-
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "AutoUse Harvesting Speed Potion", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    local args = {
-                        [1] = "d4385ca987404640bce99f634008396a",
-                        [2] = 10
-                    }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
-                    task.wait(10)
-                end
-            end)
-        else
-        end
-    end 
-})
-
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "AutoUse Instant Charge Token", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    local args = {
-                        [1] = "6b87b4d85cc14f8ebef1329a9dcd3ef1",
-                        [2] = 3
-                    } 
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                    
-                    task.wait(10)
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.Event:AddToggle("Event", 
-{
-    Title = "AutoUse Huge Instant Charge Token", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    local args = {
-                        [1] = "2a7d5410d6744c0cae8241c113ca20c6",
-                        [2] = 1
-                    }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))                               
-                    task.wait(10)
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFarm:AddToggle("AutoFarm", 
-{
-    Title = "AutoRoll", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_Roll"):InvokeServer()                 
-                    task.wait()
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "Auto Fish Default", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                  game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Default")
-                  game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
-                    task.wait()
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "Auto Fish Frozen", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Ice")
-                    game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
-                    task.wait()
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "AutoFish Corrupted", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_Fish"):InvokeServer("Corrupted")
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_Success"):FireServer()
-                    task.wait()
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "AutoFish Boat", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Boating")
-                    game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
-                    task.wait()
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "AutoFish Kraken", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    game:GetService("ReplicatedStorage").Network.Fishing_Fish:InvokeServer("Kraken")
-                    game:GetService("ReplicatedStorage").Network.Fishing_Success:FireServer()
-                    task.wait()
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "AutoCollect Boat Loot ", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        getgenv().toggle = state
-        
-        if state then
-            spawn(function()
-                while getgenv().toggle do
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_FishermanClaim"):InvokeServer()
-                    task.wait(10)
-                end
-            end)
-        else
-            getgenv().toggle = false
-        end
-    end 
-})
-
---AutoBuy Fishing Merchants Section
-local Section = Tabs.AutoFish:AddSection("AutoBuy Fishing Merchants")
-
---AutoBuy
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "AutoBuy Default Fishing Merchant", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        if state then
-            if not getgenv().AutoBuyFishingMerchant then
-                getgenv().AutoBuyFishingMerchant = true
-                spawn(function()
-                    while getgenv().AutoBuyFishingMerchant do
-                        for i = 1, 6 do
-                            for j = 1, 3 do
-                                local args = {
-                                    [1] = "StandardMerchant",
-                                    [2] = i
-                                }
-                                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
-                            end
-                        end
-                        task.wait(30)
-                    end
-                end)
+    Callback = function(var)
+        print("Quake Toggle", var)
+        if var then
+            local patches = {
+                "Patch_1", "Patch_1_Farmer", "Patch_1_Speed1", "Patch_1_Speed2", "Patch_1_Quality1", "Patch_1_Quality2",
+                "Patch_1_Speed3", "Patch_1_Quality3", "Patch_2", "Patch_2_Farmer", "Patch_2_Speed1", "Patch_2_Speed2",
+                "Patch_2_Quality1", "Patch_2_Quality2", "Patch_2_Speed3", "Patch_2_Quality3", "Patch_3", "Patch_3_Farmer",
+                "Patch_3_Speed1", "Patch_3_Speed2", "Patch_3_Quality1", "Patch_3_Quality2", "Patch_3_Speed3", "Patch_3_Quality3",
+                "Patch_4", "Patch_4_Farmer", "Patch_4_Speed1", "Patch_4_Speed2", "Patch_4_Quality1", "Patch_4_Quality2",
+                "Patch_4_Speed3", "Patch_4_Quality3", "Patch_5", "Patch_5_Farmer", "Patch_5_Speed1", "Patch_5_Speed2",
+                "Patch_5_Quality1", "Patch_5_Quality2", "Patch_5_Speed3", "Patch_5_Quality3", "Patch_6", "Patch_6_Farmer",
+                "Patch_6_Speed1", "Patch_6_Speed2", "Patch_6_Quality1", "Patch_6_Quality2", "Patch_6_Speed3", "Patch_6_Quality3",
+                "Patch_7", "Patch_7_Farmer", "Patch_7_Speed1", "Patch_7_Speed2", "Patch_7_Quality1", "Patch_7_Quality2",
+                "Patch_7_Speed3", "Patch_7_Quality3", "Patch_8", "Patch_8_Farmer", "Patch_8_Speed1", "Patch_8_Speed2",
+                "Patch_8_Quality1", "Patch_8_Quality2", "Patch_8_Speed3", "Patch_8_Quality3"
+            }
+            
+            for _, patch in ipairs(patches) do
+                local args = { [1] = patch, [2] = "Clover" }
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Purchase"):InvokeServer(unpack(args))
+                task.wait(0.5) 
             end
-        else
-            getgenv().AutoBuyFishingMerchant = false
-        end
-    end
-})
-
-local Toggle = Tabs.AutoFish:AddToggle("AutoFish", 
-{
-    Title = "AutoBuy Frozen Fishing Merchant", 
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        if state then
-            if not getgenv().AutoBuyIceFishingMerchant then
-                getgenv().AutoBuyIceFishingMerchant = true
-                spawn(function()
-                    while getgenv().AutoBuyIceFishingMerchant do
-                        for i = 1, 6 do
-                            for j = 1, 3 do
-                                local args = {
-                                    [1] = "IceFishingMerchant",
-                                    [2] = i
-                                }
-                                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("CustomMerchants_Purchase"):InvokeServer(unpack(args))
-                            end
-                        end
-                        task.wait(30)
-                    end
-                end)
-            end
-        else
-            getgenv().AutoBuyIceFishingMerchant = false
         end
     end
 })
