@@ -1,20 +1,26 @@
-local BlossomPrivate = loadstring(game:HttpGet("https://raw.githubusercontent.com/ProjectFred/Library/main/src"))()
+--Gui
+ Private = loadstring(game:HttpGet("https://raw.githubusercontent.com/Oren321/Gui/refs/heads/main/Gui", true))()
 
---Window
-local Main = BlossomPrivate:Window({
-    Title = "Blossom Private",
+ --Window
+local Window = Private:Window({
+    Title = "Private Script", 
+    Size = {
+        X = 550,
+        Y = 400
+    }
 })
 
---AutoFarm
-local AutoFarmTab = Main:Tab({
+--AutoFarmTab
+local AutoFarmTab = Window:Tab({
     Name = "AutoFarm",
-    Image = "rbxassetid://10709798174"
+    tabColor = Color3.fromRGB(255, 192, 203),
+    Image = "rbxassetid://10709769841"
 })
 
 local isToggled = false
 
 AutoFarmTab:Toggle({
-    Name = "AutoRoll",
+    Name = "Auto Roll",
     Default = false,
     Callback = function(var)
         isToggled = var
@@ -25,10 +31,11 @@ AutoFarmTab:Toggle({
     end
 })
 
---Event
-local EventTab = Main:Tab({
+--EventTab
+local EventTab = Window:Tab({
     Name = "Event",
-    Image = "rbxassetid://10709798174"
+    tabColor = Color3.fromRGB(255, 192, 203),
+    Image = "rbxassetid://10709806995"
 })
 
 local isToggled = false
@@ -37,9 +44,7 @@ EventTab:Toggle({
     Name = "Auto Open Pot Of Gold At Max",
     Default = false,
     Callback = function(var)
-
         isToggled = var
-
         if isToggled then
             spawn(function()
                 while isToggled do
@@ -58,7 +63,6 @@ EventTab:Toggle({
                                 :WaitForChild("Clovers_HatchEgg"):InvokeServer()
                         end
                     end
-
                     task.wait()
                 end
             end)
@@ -74,9 +78,7 @@ EventTab:Toggle({
     Name = "Auto Collect Clovers",
     Default = false,
     Callback = function(var)
-
         isToggled = var
-
         if isToggled then
             task.spawn(function()
                 local clovers = workspace.__THINGS.Clovers
@@ -110,9 +112,7 @@ EventTab:Toggle({
     Name = "Auto Collect Hoppers Loot",
     Default = false,
     Callback = function(var)
-
         isToggled = var
-
         if isToggled then
             task.spawn(function()
                 while isToggled do
@@ -127,6 +127,7 @@ EventTab:Toggle({
 })
 
 local isToggled = false
+
 local patches = { "Patch_1", "Patch_2", "Patch_3", "Patch_4", "Patch_5", "Patch_6", "Patch_7", "Patch_8" }
 local categories = { "", "_Farmer", "_Speed1", "_Speed2", "_Quality1", "_Quality2", "_Speed3", "_Quality3" }
 
@@ -135,7 +136,6 @@ EventTab:Toggle({
     Default = false,
     Callback = function(var)
         isToggled = var
-
         if isToggled then
             task.spawn(function()
                 while isToggled do
@@ -155,15 +155,5 @@ EventTab:Toggle({
         else
             isToggled = false
         end
-    end
-})
-
-EventTab:Dropdown({
-    Name = "Select Fishing Spot",
-    Items = {"Kraken", "Shark", "Tuna", "Salmon"}, -- Example fishing spots
-    Default = "Kraken",
-    Multiselect = false,
-    Callback = function(selectedSpot)
-        print("Selected Fishing Spot:", selectedSpot)
     end
 })
